@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <title>Mobicms\Session | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\Session</h1>
+    <p class="lead">
+        Класс SessionHandler предназначен для обработки PHP сессий и реализует стандартный SPL интерфейс SessionHandlerInterface.
+        В качестве хранилища используется база данных.
+    </p>
+
+    <h2 class="page-header">Использование</h2>
+    <p>
+        В абсолютном большинстве случаев, Вам не придется использовать данный пакет: это системный компонент и реализует стандартный механизм PHP хранения сессий.
+        В конструкторе класса задаются начальные параметры обработки сессии. В случае необходимости, можно подкорректировать кое-какие данные.
+        Но принимая во внимание, что это системный пакет, вмешательство крайне нежелательно, лучше сообщите на Форуме, что не так, попробуем разобраться...
+        Инициализируется в /system/bootstrap.php
+    </p>
+
+    <h2 class="page-header">Mobicms\Session\SessionHandler <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h4 class="public">$sessionName <small>string</small></h4>
+    Имя сессии session_name().
+    По-умолчанию: "SID", но в случае необходимости, Вы можете в своих скриптах, стандартными функциями PHP задать свое имя сессии.
+    *В большинстве случаев, в своих разработках применять не надо, данных по-умолчанию вполне хватит.*
+
+    <h4 class="public">$sessionLifeTime <small>int</small></h4>
+    <p>
+        Время хранения сессии. Переопределяет параметр PHP session.gc_maxlifetime.<br>
+        По-умолчанию 3 дня.
+    </p>
+
+    <h3>Методы</h3>
+
+    <h4 class="public">run()</h4>
+    <p>
+        Стартуем сессию. Аналог session_start(), за исключением, что за раз ставится имя сессии и параметры COOKIE.<br>
+        <mark>В своих разработках применять не желательно.</mark> Лучше подключайте системный bootstrtap.php, там уже все организовано.
+    </p>
+
+    <h4 class="public">open($savePath, $sessionId)</h4>
+    <p>
+        Реализует SessionHandlerInterface. Стандартный метод открытия сессии.<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+
+    <h4 class="public">close()</h4>
+    <p>
+        Реализует SessionHandlerInterface. Стандартный метод закрытия сессии.<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+    <h4 class="public">read($sessionId)</h4>
+    <p>
+        Реализует SessionHandlerInterface. Стандартный метод чтения данных сессии.
+        Для надежности, используется блокировка данных FOR UPDATE, которая связана с write().<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+    <h4 class="public">write($sessionId, $data)</h4>
+    <p>
+        Реализует SessionHandlerInterface. Стандартный метод записи данных, после окончания сессии.
+        Используется блокировка данных (см. read()). В дополнение к стандартным функциям обработки сессии, реализует хранение сторки с данными местоположения пользователя на сайте.<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+    <h4 class="public">destroy($sessionId)</h4>
+    <p>
+        Реализует SessionHandlerInterface. Реализует стандартный метод уничтожения сессии session_destroy()<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+    <h4 class="public">gc($maxlifetime)</h4>
+    <p>
+        Реализует SessionHandlerInterface. Стандартный "сборщик мусора".
+        Если нужно изменить время хранения сессии (по умолчанию 3 дня), используйте свойство $sessionLifeTime.<br>
+        <mark>В своих разработках применять не надо, работает системно.</mark>
+    </p>
+
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+</body>
+</html>

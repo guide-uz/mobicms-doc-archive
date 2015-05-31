@@ -1,0 +1,104 @@
+body {
+    padding-top: 50px;
+    /*background-color: #f4f4f4;*/
+}
+
+pre {
+    padding: 0;
+}
+
+pre code {
+    font-family: monospace, monospace;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.navbar-inverse {
+    background-color: #5D687C;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #BAC0CB;
+}
+
+.navbar-inverse {
+    background-color: #5D687C;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #BAC0CB;
+}
+
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+    color: #fff;
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-text {
+    color: #BAC0CB;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #BAC0CB;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+    color: #fff;
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: #758197;
+}
+
+dl.public dt {
+    color: #006c00;
+}
+
+dl.private dt {
+    color: #8c0000;
+}
+
+dl.public dd, dl.private dd {
+    margin-left: 16px;
+}
+
+dl.public small, dl.private small {
+    color: gray;
+    font-weight: normal;
+    font-family: monospace, monospace;
+}
+
+table.param {
+    color: grey;
+    font-family: monospace, monospace;
+    font-size: small;
+}
+
+table.param td {
+    padding-right: 12px;
+    vertical-align: top;
+}
+
+table.param td.desc {
+    font-family: sans-serif;
+    font-size: x-small;
+}
+
+.description {
+    color: gray;
+    font-size: .9em;
+}
+
+.big {
+    font-size: 1.7em;
+}

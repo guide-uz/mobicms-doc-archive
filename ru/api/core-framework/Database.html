@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <link href="../../../assets/code.css" rel="stylesheet">
+    <title>Mobicms\Database | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\Database</h1>
+    <p class="lead">
+        Класс-обертка для PDO_MYSQL. Реализует работу с базами данных MySQL.
+        Наследует PDO, из своих функций выполняет только считывание конфигурационного файла с аттрибутами подключения. Далее, в работу вступает PDO и в Вашем распоряжении все его возможности.
+    </p>
+
+    <h2 class="page-header">Использование</h2>
+    <p>
+        Для удобства работы, класс прописан в контейнере <code>App</code> как статический метод <code>db()</code> поэтому все вызовы методов следует проводлить через него: <code>App::db()-></code> далее используются все доступные методы PDO.
+    </p>
+    <p>
+        Несколько простых примеров:
+    </p>
+    <pre><code class="php">// Простой запрос, выводим имена всех пользователей
+$result = App::db()->query("SELECT * FROM `users`")->fetchAll();
+foreach($result as $val){
+    echo $val['nickname'] . '&lt;br&gt;';
+}
+
+// Подготовленный запрос с плейсхолдерами
+$stmt = App::db()->prepare("SELECT * FROM `users` WHERE `nickname` = ? LIMIT 1");
+$stmt->execute(['admin']);
+$result = $stmt->fetch();
+echo $result['nickname'];
+
+// Удаляем все записи из таблицы (будьте осторожны!)
+App::db()->exec("DELETE FROM `users`");</code></pre>
+
+    <h2 class="page-header">Свойства и методы</h2>
+    <p>
+        При разработке данного пакета ставилась задача не городить своих "велосипедов", а дать возможность кодерам работать непосредственно с нативным PDO.
+        Данный класс служит оберткой для PDO_MYSQL и наследует класс PDO со всеми его свойствами и методами. За инструкциями обращайтесь к официальным мануалам по PDO.
+    </p>
+
+    <h2 class="page-header">Что почитать?</h2>
+
+    <h4>Официальные инструкции</h4>
+    <ul>
+        <li><a href="http://php.net/manual/ru/book.pdo.php">Объекты данных PHP (полный мануал по PDO)</a></li>
+        <li><a href="http://php.net/manual/ru/pdo.query.php">PDO::query</a></li>
+        <li><a href="http://php.net/manual/ru/pdo.exec.php">PDO::exec</a></li>
+        <li><a href="http://php.net/manual/ru/pdo.quote.php">PDO::quote</a></li>
+        <li><a href="http://php.net/manual/ru/pdo.lastinsertid.php">PDO::lastInsertId</a></li>
+        <li><a href="http://php.net/manual/ru/pdo.prepare.php">PDO::prepare</a></li>
+        <li><a href="http://php.net/manual/ru/pdostatement.execute.php">PDOStatement::execute</a></li>
+        <li><a href="http://php.net/manual/ru/pdostatement.fetch.php">PDOStatement::fetch</a></li>
+        <li><a href="http://php.net/manual/ru/pdostatement.fetchall.php">PDOStatement::fetchAll</a></li>
+        <li><a href="http://php.net/manual/ru/pdostatement.fetchcolumn.php">PDOStatement::fetchColumn</a></li>
+        <li><a href="http://php.net/manual/ru/pdostatement.rowcount.php">PDOStatement::rowCount</a></li>
+    </ul>
+
+    <h4>Полезные статьи</h4>
+    <ul>
+        <li><a href="http://phpfaq.ru/pdo">Как работать с PDO?</a></li>
+        <li><a href="http://habrahabr.ru/post/137664/">Почему стоит пользоваться PDO?</a></li>
+        <li><a href="http://www.codeharmony.ru/materials/137/">Основы работы с расширением PDO</a></li>
+    </ul>
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+<script src="../../../assets/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

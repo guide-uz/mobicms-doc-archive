@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <link href="../../../assets/code.css" rel="stylesheet">
+    <title>Mobicms\Captcha | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\Captcha <small>v.2.1.0</small></h1>
+    <p class="lead">
+        Пакет Captcha генерирует код и картинку с заданным кодом, для защиты форм от спамеров. Для затруднения автоматического разбора, при генерации картинки используются случайные шрифты из имеющегося набора, картинка подвергается
+        искажениям. Вебмастер имеет возможность загрузить свой набор шрифтов.
+    </p>
+    <h2 class="page-header">Использование</h2>
+    <p>
+        Картинка генерируется в формате data: URL, выдается в виде строки <code>data:image/png;base64</code> и легко может быть вставлена в любое место кода. Используется в генераторе форм, на странице регистрации и при входе на сайт.
+    </p>
+    <p>
+        Для примера использования, создадим в корне сайта небольшой файл <code>form.php</code>, это будет наша форма для отправки данных.
+    </p>
+    <pre><code class="php">// Подключаем систему
+require('system/bootstrap.php');
+
+// Создаем экземпляр класса Captcha
+$captcha = new Mobicms\Captcha\Captcha;
+
+// Генерируем случайный код
+$code = $captcha->generateCode();
+
+// Генерируем картинку с заданным кодом
+$image = $captcha->generateImage($code);
+
+// Записываем код в сессию
+$_SESSION['captcha'] = $code;
+
+// Выводим форму
+echo '
+&lt;form action="test.php" method="post"&gt;
+    &lt;label&gt;Input your text&lt;br&gt;
+        &lt;input type="text" name="text"&gt;
+    &lt;/label&gt;
+    &lt;label&gt;Enter code&lt;br&gt;
+        &lt;img alt="Captcha" src="' . $image . '"&gt;&lt;br&gt;
+        &lt;input type="text" name="captcha"&gt;
+    &lt;/label&gt;
+    &lt;input type="submit" value="Submit"&gt;
+&lt;/form&gt;
+';</code></pre>
+    <div class="alert alert-info">
+        <h4>На заметку</h4>
+        <p>
+            Для генерации кода вовсе не обязательно использовать встроенный метод `generateCode()`, Вы можете применить свой генератор набора ANSI символов, к примеру <code>$code = mt_rand(100, 100000);</code>
+        </p>
+    </div>
+    <p>
+        Теперь в корне сайта создадим еще один файл <code>test.php</code> он предназначен для приема данных из формы и проверки правильности ввода кода CAPTCHA.
+    </p>
+    <pre><code class="php">
+// Подключаем систему
+require('/system/bootstrap.php');
+
+// Проверяем, была ли отправка формы?
+if (isset($_POST['submit'])) {
+    // Проверяем правильность ввода CAPTCHA
+    if (
+        // Был ли получен код CAPTCHA из формы?
+        isset($_POST['captcha'])
+        // Есть ли нужная переменная сессии?
+        && isset($_SESSION['captcha'])
+        // Символы, полученные из поля "captcha" формы, преобразуем в нижний регистр
+        // и проверяем, совпадает ли полученный код с данными в сессии?
+        && strtolower($_POST['captcha']) == strtolower($_SESSION['captcha'])
+    ) {
+        // Если код CAPTCHA был введен правильно, обрабатываем данные
+        echo '&lt;h2&gt;Проверочный код правильный!&lt;/h2&gt;';
+        if (isset($_POST['text'])) {
+            echo 'Данные формы: ' . htmlspecialchars($_POST['text']);
+            echo '&lt;br&gt;&lt;a href="/form.php">Повторить&lt;/a&gt;';
+        }
+    } else {
+        // Если код CAPTCHA был введен неверно, показываем сообщение об ошибке
+        echo 'Проверочный код был введен неверно&ltbr&gt;';
+        echo '&lt;a href="/form.php"&gt;Повторить&lt;/a&gt;';
+    }
+
+    // В любом случае, сразу после приема и проверки формы, удаляем переменную сессии!
+    // Это для того, чтоб спамботы не могли путем перебора подобрать нужный код.
+    unset($_SESSION['captcha']);
+} else {
+    echo '&lt;a href="/form.php"&gt;Форма ввода данных&lt;/a&gt;';
+}</code></pre>
+    <p>
+        Вот и все, мы получили действующую форму с защитой CAPTCHA.
+    </p>
+    <div class="alert alert-info">
+        <h4>На заметку</h4>
+        <p>
+            Для того, чтоб не напрягать посетителя с вводом ПРОПИСНЫХ / строчных символов кода Капчи, мы в form.php при записи кода в сессию и в test.php при получении кода из формы, проводим обработку с помощью функции <code>strtolower()</code>, то есть,
+            преобразуем символы в нижний регистр. В этом случае, при вводе кода Капчи, регистр не имеет значения.
+        </p>
+        <p>
+            Если же Вы хотите, чтоб регистр тоже учитывался (дополнительное усложнение Капчи), то уберите обработку <code>strtolower()</code>. Но в этом случае Вы должны использовать такие шрифты, где видна разница между прописными и строчными буквами. В
+            большинстве шрифтов, что идут по-умолчанию в комплекте, такой разницы нет, поэтому учитывать регистр не имело смысла.
+        </p>
+    </div>
+    <p>
+        Используя свойства класса, можно управлять внешним видом получаемой картинки.<br>
+        Пример генерации CAPTCHA с заданными параметрами:
+    </p>
+        <pre><code class="php">// Создаем экземпляр класса Captcha
+$captcha = new Mobicms\Captcha\Captcha;
+
+// Задаем размер картинки 200х500
+$captcha->height = 200;
+$captcha->width = 500;
+
+// Задаем размер шрифта 40
+$captcha->defaultFontSize = 40;
+
+// Для шрифтов arial.ttf и times.ttf задаем отдельный размер
+// Учтите, что по умолчанию в классе уже заданы некоторые размеры,
+// чтоб их не потерять, используем array_merge()
+$myfonts = array('arial.ttf' => array(35,0), 'times.ttf' => array(45,0));
+$captcha->customFontSize = array_merge($captcha->customFontSize, $myfonts);
+
+// Задаем минимум 5 и максимум 10 символов в коде CAPTCHA
+$captcha->lenghtMin = 5;
+$captcha->lenghtMax = 10;
+
+// Задаем набор символов, которые будут использоваться в коде
+$captcha->letters = 'abcdefgh12345';
+
+// Генерируем код
+$code = $captcha->generateCode();
+
+// Генерируем картинку с кодом
+$image = $captcha->generateImage($code);</code></pre>
+
+    <h3>Шрифты</h3>
+    <p>
+        Шрифты в Captcha выбираются случайным образом из тех, что есть в пакете.
+        Вы можете добавить туда свои шрифты и удалить имеющиеся.
+        Используются любые TTF шрифты с набором букв.<br>
+        Находятся в папке <code>/vendor/Mobicms/Captcha/fonts/</code>.
+    </p>
+    <div class="alert alert-danger">
+        <h4>Имейте в виду</h4>
+        <p>
+            Для того, чтоб CAPTCHA работала, в папке должен находиться хотя бы один файл со шрифтами.
+        </p>
+    </div>
+
+    <h2 class="page-header">Mobicms\Captcha\Captcha <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <dl class="public">
+        <dt>$width <small>int, default: 160</small></dt>
+        <dd>
+            Задает ширину картинки в пикселях.<br>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$height <small>int, default: 50</small></dt>
+        <dd>
+            Задает высоту картинки в пикселях.<br>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$fontSize <small>int, default: 24</small></dt>
+        <dd>
+            Размер шрифта на картинке.<br>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$customFonts <small>array</small></dt>
+        <dd>
+            Для отдельных шрифтов можно выставить свой размер.<br>
+            Передается массив: <code>array('файл шрифта' => array(размер, регистр))</code><br>
+            Заданный для шрифта размер заменяет значение по-умолчанию из <code>$fontSize</code>
+            <ul>
+                <li><code>регистр = 0</code> набор символов используется как есть (по умолчанию)</li>
+                <li><code>регистр = 1</code> преобразуется в строчные</li>
+                <li><code>регистр = 2</code> преобразуется в прописные</li>
+            </ul>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$lengthMin <small>int, default: 3</small></dt>
+        <dd>
+            Минимальное к-во символов в коде CAPTCHA.<br>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$lengthMax <small>int, default: 5</small></dt>
+        <dd>
+            Максимальное к-во символов в коде CAPTCHA.<br>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>$letters <small>string</small></dt>
+        <dd>
+            Набор символов, используемый при генерации кода CAPTCHA.<br>
+            По-умолчанию <code>23456789ABCDEGHKMNPQSUVXYZabcdeghkmnpqsuvxyz</code>
+        </dd>
+    </dl>
+
+    <h3>Методы</h3>
+
+    <dl class="public">
+        <dt>generateCode()</dt>
+        <dd>
+            Генерирует случайный набор символов для последующего использования в CAPTCHA.
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td>string</td>
+                    <td></td>
+                    <td>Случайный набор символов</td>
+                </tr>
+                <tr><td>&#160;</td><td></td><td></td><td></td></tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$lengthMin</code></td>
+                    <td>Минимальная длина</td>
+                </tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$lengthMax</code></td>
+                    <td>Максимальная длина</td>
+                </tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$letters</code></td>
+                    <td>Набор символов</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>generateImage(<code>$string</code>)</dt>
+        <dd>
+            Генерирует картинку CAPTCHA, в случайном порядке используя TTF шрифты,<br>
+            которые находятся в папке <code>/fonts</code> пакета Captcha.<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$string</code></td>
+                    <td>Набор символов для отображения на картинке</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>string</td>
+                    <td></td>
+                    <td>Строка с картинкой в формате <code>data:image/png;base64</code></td>
+                </tr>
+                <tr><td>&#160;</td><td></td><td></td><td></td></tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$width</code></td>
+                    <td>Ширина картинки</td>
+                </tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$height</code></td>
+                    <td>Высота артинки</td>
+                </tr>
+                <tr>
+                    <td>@uses</td>
+                    <td>property</td>
+                    <td><code>Captcha::$fontSize</code></td>
+                    <td>Размер шрифта</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+<script src="../../../assets/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

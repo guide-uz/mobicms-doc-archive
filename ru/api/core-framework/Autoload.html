@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <link href="../../../assets/code.css" rel="stylesheet">
+    <title>Mobicms\Autoload | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\Autoload <small>v.2.0.0</small></h1>
+    <p class="lead">Пакет Autoload реализует <a href="http://www.php-fig.org/psr/psr-4/ru/" target="_blank">PSR-4</a> автозагрузку классов.
+    </p>
+
+    <h2 class="page-header">Описание</h2>
+    <p>
+        Инициализация автозагрузчика происходит в файле <code>/system/bootstrap.php</code> поэтому никаких дополнительных действий не нужно.
+        Имена классов, пространств имен и файлов, должны соответствовать рекомендациям PSR.
+        Символы подчёркивания не имеют какого-либо особого значения в любой части абсолютного имени класса.
+    </p>
+    <div class="alert alert-info">
+        <h4>На заметку</h4>
+        <p>
+            Возможно использование любых библиотек, или фреймворков, соответствующих PSR-4, или PSR-0. Надо просто зарегистрировать в автозагрузчике их пространство имен и путь к файлам библиотек.
+        </p>
+    </div>
+    <p>
+        Класс прописан в контейнере <code>App</code> как статический метод <code>autoload()</code>.
+        Для импортирования пространства имен и указания пути к нему, используется метод <code>App::addNamespace($namespace, $path);</code>.
+    </p>
+
+    <h2 class="page-header">Использование</h2>
+    <p>Разберем пример использования пакета Symfony HttpFoundation.
+        Сам пакет у нас располагается в папке <code>/system/vendor/HttpFoundation</code>.
+        Для того, чтоб узнать пространство имен, открываем любой класс, располагающийся в корневой папке пакета и смотрим: <code>namespace Symfony\Component\HttpFoundation;</code>
+        Теперь нам осталось "познакомить" пакет с нашей системой, зарегистрировав пространство имен и путь к нему в автозагрузчике..
+    </p>
+        <pre><code class="php">App::autoload()->addNamespace(
+    'Symfony\Component\HttpFoundation', // Первым аргументом указываем неймспейс
+    VENDOR_PATH . 'HttpFoundation'      // Вторым аргументом указываем абсолютный путь
+);</code></pre>
+    <div class="alert alert-danger">
+        <h4>Имейте в виду</h4>
+        <p>
+            Согласно требованиям PSR-4, классы должны находиться в каком-либо пространстве имен.
+            Поэтому Вы не сможете зарегистрировать в автозагрузчике классы, не находящиеся в пространстве имен.
+        </p>
+    </div>
+
+    <h2 class="page-header">Что почитать?</h2>
+    <ul>
+        <li><a href="http://www.php-fig.org/psr/psr-4/" target="_blank">PSR-4 Autoloader</a> (оригинал на Английском)</li>
+        <li><a href="http://www.php-fig.org/psr/psr-4/ru/" target="_blank">PSR-4 Autoloader</a> (перевод на Русский)</li>
+        <li><a href="http://svyatoslav.biz/misc/psr_translation/" target="_blank">Перевод стандартов PSR-0, PSR-1, PSR-2, PSR-3, PSR-4</a></li>
+        <li><a href="http://zenwalker.me/blog/php-psr-0-vs-psr-4.html" target="_blank">Битва стандартов: PSR-0 против PSR-4</a></li>
+    </ul>
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+<script src="../../../assets/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

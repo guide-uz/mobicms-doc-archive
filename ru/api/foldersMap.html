@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../assets/favicon.ico" rel="icon">
+    <link href="../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../assets/template.css" rel="stylesheet">
+    <title>API, структура каталогов | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../index.html"><img src="../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../index.html">Содержание</a></li>
+                <li><a href="../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../api/index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">API, структура каталогов</h1>
+
+    <p class="lead"></p>
+
+    <h3 class="page-header">Структура каталогов</h3>
+    <ul class="list-unstyled">
+        <!-- .sources -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/.sources" target="_blank">.sources</a></dt>
+                <dd class="description">
+                    <p>В данном каталоге располагаются некоторые исходники (LESS, JS, POT).</p>
+                    <div class="alert alert-info">
+                        Нужен только для разработчиков, в дистрибутив не входит.
+                    </div>
+                </dd>
+            </dl>
+
+            <ul>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/.sources/mobicms" target="_blank">mobicms</a></dt>
+                        <dd class="description">LESS файлы для компиляции тем оформления</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/.sources/third-party" target="_blank">third-party</a></dt>
+                        <dd class="description">Исходники от вендоров (Bootstrap, codemirror, js-cookie, sceditor)</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/.sources/translate" target="_blank">translate</a></dt>
+                        <dd class="description">.POT файлы (шаблоны) для локализации системы на другие языки</dd>
+                    </dl>
+                </li>
+            </ul>
+        </li>
+
+        <!-- assets -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/assets" target="_blank">assets</a></dt>
+                <dd class="description">Файлы, доступные "извне" (то есть, вызываемые браузером) и не относящиеся к конкретным темам оформления.</dd>
+            </dl>
+
+            <ul>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/assets/avatars" target="_blank">avatars</a></dt>
+                        <dd class="description">Каталог аватаров</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/assets/js" target="_blank">js</a></dt>
+                        <dd class="description">Общесистемные JS, не относящиеся к конкретной теме оформления (jquery, редакторы).</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/assets/smilies" target="_blank">smilies</a></dt>
+                        <dd class="description">Каталог смайлов</dd>
+                    </dl>
+                </li>
+            </ul>
+        </li>
+
+        <!-- install -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/install" target="_blank">install</a></dt>
+                <dd class="description">Инсталлятор системы</dd>
+            </dl>
+        </li>
+
+        <!-- modules -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/modules" target="_blank">modules</a></dt>
+                <dd class="description">
+                    Тут располагаются все модули. Данный каталог обрабатывается Роутером, прямой вызов файлов закрыт.<br>
+                    Модули постоянно меняются и дополняются, поэтому список может быть неполным.<br>
+                    <a href="#">Структура папок модулей описана в отдельной статье</a>.
+                </dd>
+            </dl>
+
+            <ul>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/404" target="_blank">404</a></dt>
+                        <dd class="description">Страница 404</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/admin" target="_blank">admin</a></dt>
+                        <dd class="description">Панель администратора</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/community" target="_blank">community</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/help" target="_blank">help</a></dt>
+                        <dd class="description">Справочный модуль, аватары и смайлы</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/home" target="_blank">home</a></dt>
+                        <dd class="description">Домашняя страница</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/login" target="_blank">login</a></dt>
+                        <dd class="description">Вход на сайт</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/news" target="_blank">news</a></dt>
+                        <dd class="description">Модуль новостей</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/online" target="_blank">online</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/profile" target="_blank">profile</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/registration" target="_blank">registration</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/rss" target="_blank">rss</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/modules/whois" target="_blank">whois</a></dt>
+                        <dd class="description"></dd>
+                    </dl>
+                </li>
+            </ul>
+        </li>
+
+        <!-- system -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/system" target="_blank">system</a></dt>
+                <dd class="description">
+                    <p>Ядро системы: Core Framework, конфигурация, кэш, логи, локали, вендоры и др., относящееся к ядру.</p>
+                    <div class="alert alert-danger">
+                        <h4>Имейте в виду</h4>
+                        <p>
+                            Для того, чтоб не нарушить работоспособность всей системы и не потерять совместимость с последующими обновлениями,
+                            не меняйте и не удаляйте никакие файлы, находящиеся в данном каталоге и подкаталогах.
+                        </p>
+                        <p>
+                            Исключение составляют папки <code>cache</code> и <code>logs</code>, содержимое которых можно удалять.
+                        </p>
+                    </div>
+                    <div class="alert alert-info">
+                        <h4>На заметку</h4>
+                        <p>
+                            Если в Ваших модулях нужен другой функционал, то используйте свои классы, или наследуйте имеющиеся.
+                            Если заметили какую-нибудь ошибку, или есть предложения по усовершенствованию, сообщите на <a href="http://mobicms.net/forum/" target="_blank">оф. форуме</a>,
+                            или пришлите Pull Request в <a href="https://github.com/mobiCMS/mobicms" target="_blank">репозиторий</a>.
+                        </p>
+                    </div>
+                </dd>
+            </dl>
+
+            <ul>
+                <li>
+                    <dl>
+                        <dt>cache</dt>
+                        <dd class="description">
+                            <p>Системный кэш.</p>
+                            <div class="alert alert-success">Содержимое папки можно удалять, на работу системы не влияет.</div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/system/config" target="_blank">config</a></dt>
+                        <dd class="description">
+                            <p>Конфигурационные файлы системы.</p>
+                            <div class="alert alert-success">
+                                В файле <code>Database.php</code> находятся реквизиты доступа к базе данных.
+                            </div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/system/Mobicms" target="_blank">core</a></dt>
+                        <dd class="description">
+                            mobiCMS Core Framework<br>
+                            <a href="index.html">Структура и подробное описание пакетов находится в отдельных статьях данного раздела.</a>.
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/system/includes" target="_blank">includes</a></dt>
+                        <dd class="description">Различные подключаемые файлы.</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/system/locale" target="_blank">locale</a></dt>
+                        <dd class="description">
+                            Локализация системы (языки).<br>
+                            <a href="#">Структура папок и подробное описание есть в отдельной статье.</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>logs</dt>
+                        <dd class="description">
+                            <p>Системные логи.</p>
+                            <div class="alert alert-success">Содержимое папки можно удалять, на работу системы не влияет.</div>
+                        </dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/system/vendor" target="_blank">vendor</a></dt>
+                        <dd class="description">Тут располагаются скрипты вендоров (third-party components).</dd>
+                    </dl>
+                </li>
+            </ul>
+        </li>
+
+        <!-- themes -->
+        <li class="page-header">
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/themes" target="_blank">themes</a></dt>
+                <dd class="description">
+                    Темы оформления: шаблоны, CSS, JS, картинки и др.<br>
+                    Темы постоянно меняются и дополняются, поэтому список может быть неполным.
+                </dd>
+            </dl>
+
+            <ul>
+                <li>
+                    <dt><a href="https://github.com/mobiCMS/mobicms/tree/master/themes/thundercloud" target="_blank">thundercloud</a></dt>
+                    <dd class="description">
+                        <p>
+                            Тема оформления по-умолчанию.<br>
+                            <a href="#">Структура папок описана в отдельной статье</a>.
+                        </p>
+                        <div class="alert alert-danger">
+                            <h4>ВНИМАНИЕ!</h4>
+                            В данной теме находятся файлы, используемые системой и другими темами оформления.<br>
+                            Поэтому, не меняйте и не удаляйте саму тему, или любые файлы, находящиеся в ней.
+                        </div>
+                    </dd>
+                </li>
+            </ul>
+        </li>
+
+        <!-- uploads -->
+        <li>
+            <dl>
+                <dt class="big"><a href="https://github.com/mobiCMS/mobicms/tree/master/uploads" target="_blank">uploads</a></dt>
+                <dd class="description">Тут располагаются различные выгружаемые файлы.</dd>
+            </dl>
+        </li>
+    </ul>
+
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../assets/jquery.js"></script>
+<script src="../../assets/bootstrap.js"></script>
+</body>
+</html>

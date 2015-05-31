@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <title>Mobicms\L10n | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\i18n</h1>
+    <p class="lead">
+        Пакет i18n реализует мультиязычность. Имеется возможность плюрализации множественных чисел.
+        Фразы перевода хранятся в .PO файлах (формат GNU Gettext).
+        Для ускорения работы, применяется кэширование.
+    </p>
+
+    <h2 class="page-header">Описание</h2>
+    <p>
+        При написании пакета i18n ставилась задача получения функционала, аналогичному GNU Gettext.
+        Это дает много преимуществ, как в удобстве самого кода, так и в использовании многочисленных онлайн-сервисов перевода.
+    </p>
+    <p>
+        Имеется возможность автоматического определения локали клиента по заголовкам, посылаемым браузером.
+        Если запрашиваемый язык имеется в системе, он будет применен. Дополнительно, у посетителя есть возможность самому выбрать нужный язык.
+        В то же время, Администратор имеет возможность запретить автоматический и пользовательский выбор и принудительно установить нужный язык для всех клиентов.
+    </p>
+    <div class="alert alert-success">
+        Для перевода, <a href="https://crowdin.com/project/mobicms" target="_blank">проект mobiCMS использует онлайн сервис Crowdin</a>.
+        Вы можете свободно принимать участие в переводе, или улучшать имеющийся.
+        Если нужен какой-то другой язык и Вы готовы заняться переводом, регистрируйтесь на Crowdin и сообщите администратору перевода какой язык нужен, по возможности он будет добавлен и Вы сможете заняться переводом.
+    </div>
+
+    <h2 class="page-header">Использование</h2>
+
+    <h2 class="page-header">Функции перевода</h2>
+    <p>Для упрощения работы с пакетом и уменьшения объема кода, используются функции-псеводнимы, список которых приведен в таблице.</p>
+    <table class="table table-condensed table-hover">
+        <tr>
+            <th>_s(<code>$message [, $domain]</code>)</th>
+            <td>
+                Ищет перевод в глобальных системных фразах <code>/system/locale/</code><br>
+                Если не обязательный параметр <code>$domain</code> не задан, то по-умолчанию ищет в файле <code>default.po</code>.
+            </td>
+        </tr>
+        <tr>
+            <th>_sp(<code>$singular,&#160;$plural,&#160;$count&#160;[,&#160;$domain]</code>)</th>
+            <td>
+                Версия _s() для сообщений во множественном числе
+            </td>
+        </tr>
+        <tr>
+            <th>_m(<code>$message,&#160;[$domain]</code>)</th>
+            <td>
+                Данная функция применяется для перевода фраз модулей. Ищет перевод в папке <code>locales</code> указанного модуля.
+                Если параметр <code>$domain</code> не задан, то по-умолчанию ищет в файле <code>default.po</code>.
+            </td>
+        </tr>
+        <tr>
+            <th>_mp(<code>$singular,&#160;$plural,&#160;$count,&#160;[$domain]</code>)</th>
+            <td>
+                Версия _m() для множественного числа
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+</body>
+</html>

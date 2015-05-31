@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="mobiCMS Documentation">
+    <meta name="author" content="Oleg (AlkatraZ) Kasyanov">
+    <link href="../../../assets/favicon.ico" rel="icon">
+    <link href="../../../assets/bootstrap.css" rel="stylesheet">
+    <link href="../../../assets/template.css" rel="stylesheet">
+    <title>Mobicms\UserSystem | mobiCMS документация</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../../../index.html"><img src="../../../assets/logo.png"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../index.html">Содержание</a></li>
+                <li><a href="../../user-guide/index.html">Пользователям</a></li>
+                <li><a href="../../design-guide/index.html">Дизайнерам</a></li>
+                <li><a href="../../dev-guide/index.html">Программистам</a></li>
+                <li class="active"><a href="../index.html">API</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-header">Mobicms\UserSystem</h1>
+    <p class="lead">
+        Пакет UserSystem используется для регистрации, идентификации, авторизации и управления пользователями системы.
+    </p>
+
+    <h2 class="page-header">Описание</h2>
+    <p>
+        В mobiCMS используется авторизация на основе ролей <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%BE%D0%BC_%D0%BD%D0%B0_%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B5_%D1%80%D0%BE%D0%BB%D0%B5%D0%B9" target="_blank">RoleBased Access Control</a>.
+        Для удобства понимания и использования, применена несколько упрощенная модель, где нет многоуровневой иерархии ролей.
+    </p>
+
+    <h3>Основные понятия</h3>
+    <ul>
+        <li><strong><u>role</u></strong> (роль) – создается только при инсталляции системы, или ресурса.</li>
+        <li><strong><u>group</u></strong> (группа) – это роль, которую можно создать / изменить / удалить через админ-панель.</li>
+        <li><strong><u>permission</u></strong> (разрешение) - это действие, разрешенное к выполнению для заданного ресурса.</li>
+        <li><strong><u>resource</u></strong> (ресурс) – это объект, к примеру модуль, доступ к которому контролируется.</li>
+        <li><strong><u>user</u></strong> пользователь, у которого имеется одна или более ролей.</li>
+    </ul>
+
+    <!-- Роли -->
+    <h3>Роли</h3>
+    <p>
+        Роль - это группа, наделенная некоторыми глобальными разрешениями (permissions), которая создается только при инсталляции системы, или модулей (которые могут иметь свои роли).
+        Если роль привязать к какому-либо пользователю (добавить пользователя в группу), он наследует все разрешения данной роли.
+        Если к пользователю привязать несколько ролей (состоит в нескольких группах), то все разрешения суммируются.
+    </p>
+    <p>
+        Добавить / удалить / изменить роль через админ-панель невозможно. Создание (удаление) роли и привязка к ней разрешений происходит только при инсталляции (деинсталляции) ресурса.
+    </p>
+    <p>
+        Пользователь (кроме SU) имеющий бан, теряет все роли на время действия бана.
+    </p>
+    <p>
+        Проверить принадлежность пользователя к роли можно с помощью метода <code>hasRole()</code>.
+    </p>
+    <p>
+        Изначально имеется несколько административных ролей:
+    </p>
+    <ul>
+        <li>
+            <strong><u>SU</u></strong> суперпользователь, ID записывается в конфигурационный файл системы. Добавить пользователя через админ-панель в данную группу невозможно, надо редактировать конфигурационный файл.<br>
+            Наследует все постоянные разрешения.<br>
+            Наследует все роли.
+        </li>
+        <li>
+            <strong><u>admin</u></strong> администратор<br>
+            Наследует все постоянные разрешения.<br>
+            Наследует все роли, кроме <mark>SU</mark>.
+        </li>
+        <li>
+            <strong><u>moder</u></strong> модератор<br>
+            наследует все постоянные разрешения<br>
+            наследует все роли, кроме <mark>admin</mark> и <mark>SU</mark>
+        </li>
+    </ul>
+
+    <!-- Группы -->
+    <h3>Группы</h3>
+    <p>
+        Группа - это Роль, которая создается администратором системы через админ-панель и наделяется некоторыми постоянными разрешениями.
+        Далее, в группу можно включать нужных пользователей и они наследуют все разрешения данной группы.
+        Если пользователь состоит в нескольких группах, то все разрешения суммируются.
+    </p>
+    <p>
+        Отличие групп от Ролей в том, что их можно создавать, удалять и менять разрешения.
+    </p>
+    <p>
+        Пользователь (кроме SU) имеющий бан, теряет принадлежность ко всем группам на время действия бана.
+    </p>
+    <p>
+        Проверить принадлежность пользователя к группе можно с помощью метода <code>hasRole()</code>,
+        однако использовать подобный подход не рекомендуется, так как заранее неизвестно, какие группы могут быть созданы.
+        Вместо этого надо использовать метод проверки разрешений <code>hasPermission()</code>.
+    </p>
+
+    <!-- Разрешения -->
+    <h3>Разрешения</h3>
+    <p>
+        Разрешения - это действия, разрешенные к выполнению (к примеру создание, удаление и т.д.) и привязанные к конкретным ресурсам.
+        Разрешения определяются (если это требуется) только при инсталляции ресурсов.
+    </p>
+    <p>
+        Проверить разрешение можно с помощью метода <code>hasPermission()</code>.
+    </p>
+    <p>
+        Отменить (запретить) любое разрешение можно с помощью метода <code>denyPermission()</code>.
+    </p>
+    <p>Разрешения могут быть 2-х видов:</p>
+    <ul>
+        <li>
+            <strong><u>постоянные</u></strong> - данные разрешения хранятся в базе данных, добавляются туда при установке модуля. В дальнейшем их можно привязывать к группам через панель управления.<br>
+            Роли <mark>SU</mark>, <mark>admin</mark> и <mark>moder</mark> наследуют все постоянные разрешения!
+        </li>
+        <li>
+            <strong><u>временные</u></strong> - используются в системной бизнес-логике, задаются непосредственно в коде скриптов через метод <code>setPermission()</code>, действуют только до окончания работы текущего скрипта.<br>
+            Привязать к роли невозможно, в базу данных не добавляются.<br>
+            Ни одна роль не наследует данный тип разрешений
+        </li>
+    </ul>
+
+    <h2 class="page-header">Использование</h2>
+    <p>
+        Пакет UserSystem является <strong>основным компонентом системы, отвечающим за безопасность и работу с пользователями</strong>.
+        В своих разработках Вам придется пользоваться только классом <code>UserProvider</code>, который прописан в контейнере <code>App</code> как статический метод <code>user()</code>.
+        Инициализация других объектов проводится через него, по необходимости (lazy initialization).
+    </p>
+    <p>
+        Так, как использование пакета дело весьма ответственное и довольно сложное, <a href="#">подробные инструкции вынесены на отдельную страницу</a>.
+        Относитесь очень внимательно, так, как от этого зависит общая безопасность ресурса.
+    </p>
+
+    <!-- Mobicms\UserSystem\UserProvider -->
+    <h2 class="page-header">Mobicms\UserSystem\UserProvider <small>класс</small></h2>
+
+    <h3>Методы</h3>
+
+    <dl class="public">
+        <dt>__construct()</dt>
+        <dd>Конструктор класса</dd>
+    </dl>
+
+    <dl class="public">
+        <dt>isValid()</dt>
+        <dd>
+            Проверка, авторизован (и активирован) ли пользователь на сайте?<br>
+            Осуществляется проверка инициализации объекта User.
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">bool</td>
+                    <td>Если пользователь авторизован, возвращается <code>true</code>, если нет, то <code>false</code>.</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>login(<code>$login, $password, $remember</code>)</dt>
+        <dd>
+            Идентифицирует пользователя по Логину (Ник, или Email) и паролю, инициализирует объект User.<br>
+            Если <code>$remember = true</code>, то устанавливает COOKIE с ID и токеном авторизации.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$login</code></td>
+                    <td>Ник, или Email</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$password</code></td>
+                    <td>Пароль</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>bool</td>
+                    <td><code>$remember</code></td>
+                    <td>"Запомнить"</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">LoginRequiredException</td>
+                    <td>Если Логин пустой</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">WrongPasswordException</td>
+                    <td>Если пароль не совпадает</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>logout(<code>$clearToken</code>)</dt>
+        <dd>
+            Осуществляет "выход" пользователя с сайта. Уничтожает объект User и текущую сессию пользователя.<br>
+            Если <code>$clearToken = true</code>, то удаляется токен авторизации и COOKIE.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>bool</td>
+                    <td><code>$clearToken</code></td>
+                    <td>"Забыть"</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getSystem()</dt>
+        <dd>
+            Получает текущего системного пользователя.
+            Если пользователь авторизован и активирован (прошел проверку <code>isValid()</code>), то возвращается объект <code>User</code>, если нет, то объект-заглушка <code>UserEmpty</code>.
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getSelected()</dt>
+        <dd>
+            Получает объект пользователя, заданного через метод <code>setSelected()</code>.
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>setSelected(<code>$userId</code>)</dt>
+        <dd>
+            Поиск пользователя для дальнейшего использования методом <code>getSelected()</code>.<br>
+            В случае успешного поиска, запоминает объект.
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>findById(<code>$userId</code>)</dt>
+        <dd>
+            Основной метод поиска пользователя по ID.
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>findByLogin(<code>$login</code>)</dt>
+        <dd>
+            Основной метод поиска пользователя по Логину (ник, или Email).
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>authenticate()</dt>
+        <dd>
+            Аутентификация пользователя. Проверяет наличие сессии, или COOKIE с ключем авторизации.
+            Если есть, то проверяется подлинность и инициализируется объект User.<br>
+            <mark>Вызывается системно, в своих разработках применять не придется</mark>.
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>updateAttributes()</dt>
+        <dd>
+            Обновление оперативных атрибутов пользователя (IP, IP via Proxy, UserAgent, Last visit).
+        </dd>
+    </dl>
+
+    <!-- Mobicms\UserSystem\RBAC -->
+    <h2 class="page-header">Mobicms\UserSystem\RBAC <small>класс</small></h2>
+
+    <h3>Методы</h3>
+
+    <dl class="public">
+        <dt>getRolesList()</dt>
+        <dd>
+            Получает список всех ролей<br>
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">array</td>
+                    <td>Ассоциативный массив с атрибутами ролей</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getGroupsList()</dt>
+        <dd>
+            Получает список всех групп<br>
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">array</td>
+                    <td>Ассоциативный массив с атрибутами групп</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getRole(<code>$id</code>)</dt>
+        <dd>
+            Получает заданную по ID роль, или группу<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$id</code></td>
+                    <td>ID роли</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">array</td>
+                    <td>Массив с атрибутами роли</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getRolePermissions(<code>$id</code>)</dt>
+        <dd>
+            Получает все разрешения, привязанные к заданной роли, или группе<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$id</code></td>
+                    <td>ID роли</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">array</td>
+                    <td>Ассоциативный массив с атрибутами разрешений</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getRoleUsers(<code>$id</code>)</dt>
+        <dd>
+            Получает всех пользователей, привязанных к заданной роли, или группе<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$id</code></td>
+                    <td>ID роли</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td colspan="2">array</td>
+                    <td>Ассоциативный массив с атрибутами пользоваталей<br>(id, nickname, email)</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>addGroup(<code>$name, $description</code>)</dt>
+        <dd>
+            Добавляет новую группу.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$name</code></td>
+                    <td>Название группы</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$description</code></td>
+                    <td>Описание группы</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleExistsException</td>
+                    <td>Если группа уже существует</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>bindUserToRole(<code>$userId, $roleId</code>)</dt>
+        <dd>
+            Привязывает пользователя к заданной роли, или группе.<br>
+            Обновляет кэш ролей и разрешений пользователя.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$userId</code></td>
+                    <td>ID пользователя</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>array</td>
+                    <td><code>$roleId</code></td>
+                    <td>ID роли</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>unbindUserFromRole(<code>$userId, $roleId</code>)</dt>
+        <dd>
+            Отвязывает пользователя от заданной роли, или группы.<br>
+            Обновляет кэш ролей и разрешений пользователя.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$userId</code></td>
+                    <td>ID пользователя</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>array</td>
+                    <td><code>$roleId</code></td>
+                    <td>ID роли</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>bindPermissionsToGroup(<code>$id, $permissions</code>)</dt>
+        <dd>
+            Привязывает разрешения к заданной группе.
+            <ul>
+                <li>Очищаются все старые разрешения, которые были привязаны к данной группе</li>
+                <li>Привязываются новые разрешения, полученные в массиве $permissions</li>
+                <li>Обновляется кэш всех пользователей группы</li>
+            </ul>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$id</code></td>
+                    <td>ID группы</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>array</td>
+                    <td><code>$permissions</code></td>
+                    <td>Массив с ID разрешений, которые нужно привязать к группе</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">RoleNotFoundException</td>
+                    <td>Если роль не найдена</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>getPermissionsList()</dt>
+        <dd>
+            Получает список всех разрешений<br>
+            <small>
+                @return array
+            </small>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>install(<code></code>)</dt>
+        <dd>
+            ???
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td></td>
+                    <td><code></code></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>uninstall(<code></code>)</dt>
+        <dd>
+            ???
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td></td>
+                    <td><code></code></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>checkPermissionRoleBinding()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>checkUserRoleBinding()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>findUser()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>updateAllRoleUsers()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>updateUserCache()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <dl class="private">
+        <dt>checkKey()</dt>
+        <dd>
+        </dd>
+    </dl>
+
+    <!-- Mobicms\UserSystem\Services\User -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\User <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Mobicms\UserSystem\Services\UserAcl -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\UserAcl <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Mobicms\UserSystem\Services\UserConfig -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\UserConfig <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Mobicms\UserSystem\Services\UserEmpty -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\UserEmpty <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Mobicms\UserSystem\Services\UserGuard -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\UserGuard <small>класс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Mobicms\UserSystem\Services\UserInterface -->
+    <h2 class="page-header">Mobicms\UserSystem\Services\UserInterface <small>интерфейс</small></h2>
+
+    <h3>Свойства</h3>
+
+    <h3>Методы</h3>
+
+    <!-- Иерархия исключений -->
+    <h2 class="page-header">Иерархия исключений</h2>
+    <ul>
+        <li>
+            <h4>ExceptionInterface</h4>
+            <ul>
+                <li>
+                    <h5>RbacExceptionInterface</h5>
+                    <ul>
+                        <li>
+                            <h6>PermissionExistsException
+                                <small>(extends InvalidArgumentException)</small>
+                            </h6>
+                        </li>
+                        <li>
+                            <h6>PermissionNotFoundException
+                                <small>(extends InvalidArgumentException)</small>
+                            </h6>
+                        </li>
+                        <li>
+                            <h6>RoleExistsException
+                                <small>(extends InvalidArgumentException)</small>
+                            </h6>
+                        </li>
+                        <li>
+                            <h6>RoleNotFoundException
+                                <small>(extends InvalidArgumentException)</small>
+                            </h6>
+                        </li>
+                        <li><h6>InvalidCharactersException</h6></li>
+                        <li><h6>InvalidLenghtException</h6></li>
+                        <li><h6>InvalidResourceException</h6></li>
+                        <li><h6>SystemRoleException</h6></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>UserExceptionInterface</h5>
+                    <ul>
+                        <li><h6>LoginRequiredException</h6></li>
+                        <li><h6>UserNotFoundException</h6></li>
+                        <li><h6>WrongPasswordException</h6></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr>
+    <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
+</div>
+
+<script src="../../../assets/jquery.js"></script>
+<script src="../../../assets/bootstrap.js"></script>
+</body>
+</html>
