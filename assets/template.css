@@ -102,3 +102,7 @@ table.param td.desc {
 .big {
     font-size: 1.7em;
 }
+
+.alert h2{
+    margin-top: 0;
+}
