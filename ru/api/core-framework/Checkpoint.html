@@ -60,6 +60,7 @@
         <li><a href="#fields">Список полей пользователя</a></li>
         <li><a href="#configfields">Список полей пользовательских настроек</a></li>
         <li><a href="#facade">Класс Mobicms\Checkpoint\Facade</a></li>
+        <li><a href="#validator">Класс Mobicms\Checkpoint\Tools\Validator</a></li>
     </ul>
 
     <!-- Описание -->
@@ -580,6 +581,10 @@ try{
     <!-- Mobicms\Checkpoint\Facade -->
     <a id="facade"></a>
     <h2 class="page-header">Mobicms\Checkpoint\Facade <small>класс</small></h2>
+    <p>
+        Вся работа с пакетом Checkpoint осуществляется через фасад <code>Mobicms\Checkpoint\Facade</code>, который зарегистрирован в сервис-локаторе под псевдонимом "user".
+        Все методы класса вызываются через контейнер: <code>App::user()-></code> и далее указываете нужный метод.
+    </p>
 
     <h3>Методы</h3>
 
@@ -806,7 +811,7 @@ try{
         <dt>validate()</dt>
         <dd>
             Набор валидаторов.<br>
-            Подробности смотрите в <a href="#">описании класса Validator</a>.
+            Подробности смотрите в <a href="#validator">описании класса Validator</a>.
             <table class="param">
                 <tr>
                     <td>@return</td>
@@ -852,6 +857,13 @@ try{
             В своих разработках применять не придется, используется в пакете Checkpoint.
         </dd>
     </dl>
+
+    <!-- Mobicms\Checkpoint\Tools\Validator -->
+    <a id="validator"></a>
+    <h2 class="page-header">Mobicms\Checkpoint\Tools\Validator <small>класс</small></h2>
+    <p>
+        Класс содержит набор валидаторов, предназначенных для работы с данными пользовательских полей.
+    </p>
 
     <hr>
     <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
