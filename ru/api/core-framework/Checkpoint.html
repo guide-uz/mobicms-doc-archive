@@ -663,6 +663,162 @@ try{
     </dl>
 
     <dl class="public">
+        <dt>findByLogin(<code>$login</code>)</dt>
+        <dd>
+            Ищет пользователя по его Никнейму, или Email адресу.<br>
+            Метод сам определяет, что ему было передано в аргументе. Если это Email адрес, то поиск будет вестись в соответствующенм поле базы данных.<br>
+            Если найден, возвращает объект User со всеми данными пользователя.<br>
+            Если не найден, выбрасывает исключение <code>UserNotFoundException</code>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$login</code></td>
+                    <td>Никнейм, или Email пользователя</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>User</td>
+                    <td></td>
+                    <td>Объект пользователя со всеми данными</td>
+                </tr>
+                <tr><td colspan="4">&#160;</td></tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">InvalidInputException</td>
+                    <td>Если аргумент - пустая строка</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>login(<code>$login, $password, [$remember = false]</code>)</dt>
+        <dd>
+            Авторизация пользователя (Login)
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$login</code></td>
+                    <td>Никнейм, или Email пользователя</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td><code>$password</code></td>
+                    <td>Пароль пользователя</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>bool</td>
+                    <td><code>$remember</code></td>
+                    <td>Запомнить. Устанавливает COOKIE</td>
+                </tr>
+                <tr><td colspan="4">&#160;</td></tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">WrongPasswordException</td>
+                    <td>Если пароль неверный</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">InvalidInputException</td>
+                    <td>Если в качестве аргументов переданы неверные данные</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>logout(<code>[$clearToken = false]</code>)</dt>
+        <dd>
+            Уничтожение авторизации, "выход" пользователя с сайта.<br>
+            Если в аргументе передать true, то будет удален токен, авторизация становится недействительной на всех браузерах, где были установлены соответствующие COOKIE.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>bool</td>
+                    <td>$clearToken</td>
+                    <td>Удалить токен авторизации</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>addUser(<code>$nickname, $password, [$email = '', $gender = 'm', $activate = 2, $approve = 2]</code>)</dt>
+        <dd>
+            Добавление (регистрация) нового пользователя.<br>
+            Насчет аргументов $activate и $approve, смотрите в <a href="#userfields">таблице со списком полей</a>.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$nickname</td>
+                    <td>Никнейм</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$password</td>
+                    <td>Пароль</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$email</td>
+                    <td>Email адрес</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$gender</td>
+                    <td>Пол (m/w)</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td>$activate</td>
+                    <td>Активировать</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td>$approve</td>
+                    <td>Подтвердить</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>validate()</dt>
+        <dd>
+            Набор валидаторов.<br>
+            Подробности смотрите в <a href="#">описании класса Validator</a>.
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td>Validator</td>
+                    <td></td>
+                    <td>Объект класса Validator</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
         <dt>setUser(<code>AbstractUser $user</code>)</dt>
         <dd>
             Устанавливает текущего системного пользователя.<br>
