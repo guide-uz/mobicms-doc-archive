@@ -59,6 +59,7 @@
         </li>
         <li><a href="#fields">Список полей пользователя</a></li>
         <li><a href="#configfields">Список полей пользовательских настроек</a></li>
+        <li><a href="#facade">Класс Mobicms\Checkpoint\Facade</a></li>
     </ul>
 
     <!-- Описание -->
@@ -408,8 +409,9 @@ try{
             <td><span class="label label-info">int</span></td>
             <td>
                 Активирован ли пользователь?<br>
-                0 - Ожидает активации<br>
-                1 - Пользователь активирован (по умолчанию)
+                0 - Гость<br>
+                1 - Ожидает активации<br>
+                2 - Пользователь активирован (по умолчанию)
             </td>
         </tr>
         <tr>
@@ -574,6 +576,99 @@ try{
             <td>Выбранная тема оформления</td>
         </tr>
     </table>
+
+    <!-- Mobicms\Checkpoint\Facade -->
+    <a id="facade"></a>
+    <h2 class="page-header">Mobicms\Checkpoint\Facade <small>класс</small></h2>
+
+    <h3>Методы</h3>
+
+    <dl class="public">
+        <dt>isValid()</dt>
+        <dd>
+            Проверяет, авторизован ли текущий пользователь?
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - если авторизован<br>
+                        false - если не авторизован (гость)
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>get()</dt>
+        <dd>
+            Возвращает объект текущего пользователя
+            <table class="param">
+                <tr>
+                    <td>@return</td>
+                    <td>User|EmptyUser</td>
+                    <td></td>
+                    <td>
+                        Если текущий пользователь авторизован, то возвращается объект класса User (ArrayObject) со всеми данными пользователя.<br>
+                        Для гостей (не авторизованных пользователей) возвращается фейк-объект класса EmptyUser, где:
+                        <ul>
+                            <li>id=0</li>
+                            <li>nickname=''</li>
+                            <li>rights=0</li>
+                            <li>activated=0</li>
+                            <li>approved=2</li>
+                            <li>настройки - по умолчанию</li>
+                            <li>все остальные поля - false</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>findById(<code>$id</code>)</dt>
+        <dd>
+            Ищет пользователя по его ID.<br>
+            Если найден, возвращает объект User со всеми данными пользователя.<br>
+            Если не найден, выбрасывает исключение <code>UserNotFoundException</code>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td><code>$id</code></td>
+                    <td>ID пользователя</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>User</td>
+                    <td></td>
+                    <td>Объект пользователя со всеми данными</td>
+                </tr>
+                <tr><td colspan="4">&#160;</td></tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">UserNotFoundException</td>
+                    <td>Если пользователь не найден</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">InvalidInputException</td>
+                    <td>Если в качестве аргумента были переданы неверные данные</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>setUser(<code>AbstractUser $user</code>)</dt>
+        <dd>
+            Устанавливает текущего системного пользователя.<br>
+            В своих разработках применять не придется, используется в пакете Checkpoint.
+        </dd>
+    </dl>
 
     <hr>
     <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
