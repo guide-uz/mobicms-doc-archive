@@ -819,6 +819,33 @@ try{
     </dl>
 
     <dl class="public">
+        <dt>generateToken(<code>[$length = 42, $pool = '']</code>)</dt>
+        <dd>
+            Генерирует токен авторизации (строка заданной длины и случайным набором символов).
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>int</td>
+                    <td>$length</td>
+                    <td>Длина генерируемой строки</td>
+                </tr>
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$pool</td>
+                    <td>Набор символов, из которых генерируется строка</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>string</td>
+                    <td></td>
+                    <td>Токен</td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="private">
         <dt>setUser(<code>AbstractUser $user</code>)</dt>
         <dd>
             Устанавливает текущего системного пользователя.<br>
