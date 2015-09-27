@@ -161,7 +161,7 @@ $email = $user->offsetGet('email');       // Эл. почта пользоват
     <a id="task2"></a>
     <h3><span class="label label-success">Пример 2</span></h3>
     <h3>Чтение данных заданного пользователя</h3>
-    <p><strong>Задача: нужно <abbr title="Read">получить</abbr> данные (ID, Nickname, Email) заданного пользователя.</strong></p>
+    <p><strong>Задача: нужно <abbr title="Read">получить</abbr> данные (например ID, Nickname, Email) заданного пользователя.</strong></p>
     <p>
         Заданного пользователя мы можем искать в базе по его ID, Нику, или Email адресу.
         Учтите, что если заданный пользователь не найден, бросается исключение <code>Mobicms\Checkpoint\Exceptions\UserNotFoundException</code>, поэтому код с запросом на поиск надо помещать внутрь блока try/catch
@@ -432,7 +432,7 @@ try{
             <td>
                 Административные права доступа<br>
                 0 - Обычный пользователь (по умолчанию)<br>
-                6 - Супермодератор<br>
+                6 - Модератор<br>
                 7 - Администратор<br>
                 9 - Суперпользователь
             </td>
@@ -765,6 +765,8 @@ try{
         <dt>addUser(<code>$nickname, $password, [$email = '', $gender = 'm', $activate = 2, $approve = 2]</code>)</dt>
         <dd>
             Добавление (регистрация) нового пользователя.<br>
+            При добавлении проводится проверка на занятость Никнейма и Email адреса. Если любой из них занят, выбрасывается исключение.
+            Если Email не пустой, то проводится валидация адреса. Если валидация не пройдена, выбрасывается исключение.<br>
             Насчет аргументов $activate и $approve, смотрите в <a href="#userfields">таблице со списком полей</a>.
             <table class="param">
                 <tr>
@@ -802,6 +804,27 @@ try{
                     <td>int</td>
                     <td>$approve</td>
                     <td>Подтвердить</td>
+                </tr>
+                <tr><td colspan="4">&#160;</td></tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">InvalidNicknameException</td>
+                    <td>Если Никнейм пустой</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">NicknameExistsException</td>
+                    <td>Если Никнейм уже занят</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">InvalidEmailException</td>
+                    <td>Если Email адрес не пустой и не прошел валидацию</td>
+                </tr>
+                <tr>
+                    <td>@throws</td>
+                    <td colspan="2">EmailExistsException</td>
+                    <td>Если Email адрес уже используется</td>
                 </tr>
             </table>
         </dd>
@@ -864,6 +887,126 @@ try{
     <p>
         Класс содержит набор валидаторов, предназначенных для работы с данными пользовательских полей.
     </p>
+
+    <dl class="public">
+        <dt>checkNicknameChars(<code>$nickname</code>)</dt>
+        <dd>
+            Проверяет Никнейм на наличие запрещенных символов.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$nickname</td>
+                    <td>Никнейм, который нужно проверить</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - Проверка пройдена успешно<br>
+                        false - Имеются запрещенные символы
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>checkNicknameCharsets(<code>$nickname</code>)</dt>
+        <dd>
+            Проверяет, чтоб в Никнейме одновременно не использовались символы разных языков.<br>
+            Как известно, некоторые символы разных кодировок имеют схожее начертание. К примеру A, O, o, K, и некоторые другие символы, для латиницы и кирилицы выглядят одинаково.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$nickname</td>
+                    <td>Никнейм, который нужно проверить</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - Проверка пройдена успешно<br>
+                        false - Имеются символы разных кодировок
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>checkNicknameRepeatedChars(<code>$nickname</code>)</dt>
+        <dd>
+            Проверяет, чтоб не было более 3-х подряд повторяющихся символов.
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$nickname</td>
+                    <td>Никнейм, который нужно проверить</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - Проверка пройдена успешно<br>
+                        false - Имеются повторяющиеся символы
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+
+    <dl class="public">
+        <dt>checkNicknameExists(<code>$nickname</code>)</dt>
+        <dd>
+            Проверяет, имеется ли в базе заданный Никнейм (занят ли ник)?<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$nickname</td>
+                    <td>Никнейм, который нужно проверить</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - Никнейм в базе есть (занят)<br>
+                        false - Никнейма в базе нет (свободен для регистрации)
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+    <dl class="public">
+        <dt>checkEmailExists(<code>$email</code>)</dt>
+        <dd>
+            Проверяет, имеется ли в базе заданный Email (занят ли адрес)?<br>
+            <table class="param">
+                <tr>
+                    <td>@param</td>
+                    <td>string</td>
+                    <td>$email</td>
+                    <td>Email, который нужно проверить</td>
+                </tr>
+                <tr>
+                    <td>@return</td>
+                    <td>bool</td>
+                    <td></td>
+                    <td>
+                        true - Email в базе есть (занят)<br>
+                        false - Email адреса в базе нет (свободен)
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
 
     <hr>
     <div style="text-align: center; padding-bottom: 16px">&copy; <a href="http://mobicms.net" target="_blank">mobiCMS Project</a></div>
